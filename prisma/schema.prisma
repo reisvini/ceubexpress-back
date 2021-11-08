@@ -6,6 +6,66 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
+  provider = "mysql"
   url      = env("DATABASE_URL")
+}
+
+model user {
+  id                 String      @id @default(cuid())
+  name               String
+  email              String      @unique
+  password           String
+  stripe_costumer_id String
+  createdAt          DateTime    @default(now())
+  updatedAt          DateTime    @default(now())
+  product            product[]
+  purchase           purchase[]
+  favorites          favorites[]
+  role               role[]
+}
+
+model product {
+  id         String   @id @default(uuid())
+  name       String
+  brand      String
+  price      Float
+  image      String
+  stripe_id  String
+  created_at DateTime @default(now())
+
+  user      user?       @relation(fields: [userId], references: [id])
+  userId    String?
+  purchase  purchase[]
+  favorites favorites[]
+}
+
+model purchase {
+  id         String   @id @default(uuid())
+  user_id    String
+  product_id String
+  created_at DateTime @default(now())
+
+  user   user?   @relation(fields: [userId], references: [id])
+  userId String?
+
+  product   product? @relation(fields: [productId], references: [id])
+  productId String?
+}
+
+model favorites {
+  id         String   @id @default(uuid())
+  created_at DateTime @default(now())
+
+  user   user?   @relation(fields: [userId], references: [id])
+  userId String?
+
+  product   product? @relation(fields: [productId], references: [id])
+  productId String?
+}
+
+model role {
+  id         String  @id @default(uuid())
+  permission String
+  user       user?   @relation(fields: [userId], references: [id])
+  userId     String?
 }
