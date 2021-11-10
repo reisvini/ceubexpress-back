@@ -18,10 +18,10 @@ model user {
   stripe_costumer_id String
   createdAt          DateTime    @default(now())
   updatedAt          DateTime    @default(now())
-  product            product[]
   purchase           purchase[]
   favorites          favorites[]
-  role               role[]
+  role               role        @relation(fields: [isUserAdmin], references: [isUserAdmin])
+  isUserAdmin        Boolean     @default(false)
 }
 
 model product {
@@ -33,8 +33,6 @@ model product {
   stripe_id  String
   created_at DateTime @default(now())
 
-  user      user?       @relation(fields: [userId], references: [id])
-  userId    String?
   purchase  purchase[]
   favorites favorites[]
 }
@@ -64,8 +62,8 @@ model favorites {
 }
 
 model role {
-  id         String  @id @default(uuid())
-  permission String
-  user       user?   @relation(fields: [userId], references: [id])
-  userId     String?
+  id          String  @id @default(uuid())
+  isUserAdmin Boolean @unique @default(false)
+
+  user user[]
 }

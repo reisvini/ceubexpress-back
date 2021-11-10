@@ -1,26 +1,72 @@
-import { Injectable } from '@nestjs/common';
+/* eslint-disable prettier/prettier */
+import { ConflictException, Injectable } from '@nestjs/common';
+import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { hashSync } from 'bcrypt';
 
 @Injectable()
 export class UserService {
-  create(createUserDto: CreateUserDto) {
-    return 'This action adds a new user';
+  constructor(private readonly prisma: PrismaService) {}
+
+  async create(createUserDto: CreateUserDto) {
+    const existing = await this.prisma.user.findUnique({
+      where: {
+        email: createUserDto.email,
+      }
+    });
+
+    if (existing) {
+      throw new ConflictException('user_alredy_exists');
+    }
+    
+    createUserDto.password = hashSync(createUserDto.password, 10);
+    return this.prisma.user.create({
+      data: createUserDto,
+      select: {
+        name: true,
+        email: true,
+        id: true,
+        role: true,
+        stripe_costumer_id: true,
+      },
+    });
   }
 
   findAll() {
-    return `This action returns all user`;
+    return this.prisma.user.findMany({
+      select: {
+        id: true,
+        name: true,
+        email: true,
+        isUserAdmin: true,
+        stripe_costumer_id: true,
+      },
+    });
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} user`;
+  findOne(id: string) {
+    return this.prisma.user.findUnique({
+      where: {
+        id,
+      },
+      select: {
+        id: true,
+        name: true,
+        email: true,
+        isUserAdmin: true,
+        stripe_costumer_id: true,
+        favorites: true,
+        purchase: true,
+      },
+    });
   }
 
-  update(id: number, updateUserDto: UpdateUserDto) {
-    return `This action updates a #${id} user`;
+  update(id: string, updateUserDto: UpdateUserDto) {
+    return this.prisma.user.update({ data: updateUserDto, where: { id } });
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} user`;
+  remove(id: string) {
+    return this.prisma.user.delete({ where: { id } });
   }
 }
