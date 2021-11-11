@@ -13,13 +13,13 @@ export class UserService {
     const existing = await this.prisma.user.findUnique({
       where: {
         email: createUserDto.email,
-      }
+      },
     });
 
     if (existing) {
       throw new ConflictException('user_alredy_exists');
     }
-    
+
     createUserDto.password = hashSync(createUserDto.password, 10);
     return this.prisma.user.create({
       data: createUserDto,
@@ -27,7 +27,7 @@ export class UserService {
         name: true,
         email: true,
         id: true,
-        role: true,
+        role: { select: { isUserAdmin: true } },
         stripe_costumer_id: true,
       },
     });
@@ -45,15 +45,16 @@ export class UserService {
     });
   }
 
-  findOne(id: string) {
+  findOne(email: string) {
     return this.prisma.user.findUnique({
       where: {
-        id,
+        email,
       },
       select: {
         id: true,
         name: true,
         email: true,
+        password: true,
         isUserAdmin: true,
         stripe_costumer_id: true,
         favorites: true,
