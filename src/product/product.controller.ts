@@ -1,15 +1,36 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  UseGuards,
+  UseInterceptors,
+  UploadedFile,
+} from '@nestjs/common';
 import { ProductService } from './product.service';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
-
+import { AuthGuard } from '@nestjs/passport';
+import { RoleGuard } from 'src/auth/guards/role.guard';
+import { Express } from 'express';
+import { FileInterceptor } from '@nestjs/platform-express';
 @Controller('product')
 export class ProductController {
   constructor(private readonly productService: ProductService) {}
 
+  @UseGuards(AuthGuard('jwt'))
+  @UseGuards(RoleGuard)
+  @UseInterceptors(FileInterceptor('file'))
   @Post()
-  create(@Body() createProductDto: CreateProductDto) {
-    return this.productService.create(createProductDto);
+  create(
+    @Body() createProductDto: CreateProductDto,
+    @UploadedFile() image: Express.Multer.File,
+  ) {
+    createProductDto.price = Number(createProductDto.price);
+    return this.productService.create(createProductDto, image);
   }
 
   @Get()
@@ -19,16 +40,27 @@ export class ProductController {
 
   @Get(':id')
   findOne(@Param('id') id: string) {
-    return this.productService.findOne(+id);
+    return this.productService.findOne(id);
   }
 
+  @UseGuards(AuthGuard('jwt'))
+  @UseGuards(RoleGuard)
+  @UseInterceptors(FileInterceptor('file'))
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateProductDto: UpdateProductDto) {
-    return this.productService.update(+id, updateProductDto);
+  update(
+    @Param('id') id: string,
+    @Body() updateProductDto: UpdateProductDto,
+    @UploadedFile() image: Express.Multer.File,
+  ) {
+    updateProductDto.price = Number(updateProductDto.price);
+
+    return this.productService.update(id, updateProductDto, image);
   }
 
+  @UseGuards(AuthGuard('jwt'))
+  @UseGuards(RoleGuard)
   @Delete(':id')
   remove(@Param('id') id: string) {
-    return this.productService.remove(+id);
+    return this.productService.remove(id);
   }
 }

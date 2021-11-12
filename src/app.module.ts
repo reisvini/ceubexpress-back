@@ -8,6 +8,8 @@ import { ProductModule } from './product/product.module';
 import { FavoritesModule } from './favorites/favorites.module';
 import { RoleModule } from './role/role.module';
 import { AuthModule } from './auth/auth.module';
+import { CloudinaryModule } from './cloudinary/cloudinary.module';
+import { Cloudinary } from './cloudinary';
 
 @Module({
   imports: [
@@ -18,8 +20,9 @@ import { AuthModule } from './auth/auth.module';
     FavoritesModule,
     RoleModule,
     AuthModule,
+    CloudinaryModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [AppService, Cloudinary],
 })
 export class AppModule {}
