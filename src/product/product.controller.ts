@@ -52,7 +52,9 @@ export class ProductController {
     @Body() updateProductDto: UpdateProductDto,
     @UploadedFile() image: Express.Multer.File,
   ) {
-    updateProductDto.price = Number(updateProductDto.price);
+    if (updateProductDto.price) {
+      updateProductDto.price = Number(updateProductDto.price);
+    }
 
     return this.productService.update(id, updateProductDto, image);
   }
