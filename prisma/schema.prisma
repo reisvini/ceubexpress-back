@@ -20,7 +20,7 @@ model user {
   updatedAt          DateTime    @default(now())
   purchase           purchase[]
   favorites          favorites[]
-  role               role        @relation(fields: [isUserAdmin], references: [isUserAdmin])
+  role               role        @relation(fields: [isUserAdmin], references: [admin])
   isUserAdmin        Boolean     @default(false)
 }
 
@@ -39,31 +39,29 @@ model product {
 
 model purchase {
   id         String   @id @default(uuid())
-  user_id    String
-  product_id String
   created_at DateTime @default(now())
 
-  user   user?   @relation(fields: [userId], references: [id])
-  userId String?
+  user   user   @relation(fields: [userId], references: [id])
+  userId String
 
-  product   product? @relation(fields: [productId], references: [id])
-  productId String?
+  product   product @relation(fields: [productId], references: [id])
+  productId String
 }
 
 model favorites {
   id         String   @id @default(uuid())
   created_at DateTime @default(now())
 
-  user   user?   @relation(fields: [userId], references: [id])
-  userId String?
+  user   user   @relation(fields: [userId], references: [id])
+  userId String
 
-  product   product? @relation(fields: [productId], references: [id])
-  productId String?
+  product   product @relation(fields: [productId], references: [id])
+  productId String
 }
 
 model role {
-  id          String  @id @default(uuid())
-  isUserAdmin Boolean @unique @default(false)
+  id    String  @id @default(uuid())
+  admin Boolean @unique @default(false)
 
   user user[]
 }

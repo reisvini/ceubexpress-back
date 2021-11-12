@@ -18,5 +18,5 @@ export class UpdateUserDto extends PartialType(CreateUserDto) {
 
   @IsBoolean()
   @IsOptional()
-  isUserAdmin: boolean;
+  isUserAdmin?: boolean;
 }

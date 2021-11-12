@@ -27,7 +27,7 @@ export class UserService {
         name: true,
         email: true,
         id: true,
-        role: { select: { isUserAdmin: true } },
+        role: { select: { admin: true } },
         stripe_costumer_id: true,
       },
     });
@@ -49,6 +49,24 @@ export class UserService {
     return this.prisma.user.findUnique({
       where: {
         email,
+      },
+      select: {
+        id: true,
+        name: true,
+        email: true,
+        password: true,
+        isUserAdmin: true,
+        stripe_costumer_id: true,
+        favorites: true,
+        purchase: true,
+      },
+    });
+  }
+
+  findOneById(id: string) {
+    return this.prisma.user.findUnique({
+      where: {
+        id,
       },
       select: {
         id: true,

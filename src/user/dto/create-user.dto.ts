@@ -1,6 +1,6 @@
 // import {  } from 'class-validator';
 
-import { IsBoolean, IsEmail, IsString } from 'class-validator';
+import { IsBoolean, IsEmail, IsOptional, IsString } from 'class-validator';
 import { User } from '../entities/user.entity';
 
 export class CreateUserDto extends User {
@@ -15,7 +15,8 @@ export class CreateUserDto extends User {
   password: string;
 
   @IsBoolean()
-  isUserAdmin: boolean;
+  @IsOptional()
+  isUserAdmin?: boolean;
 
   @IsString()
   stripe_costumer_id: string;

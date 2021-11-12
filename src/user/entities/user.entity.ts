@@ -8,7 +8,7 @@ export class User implements Prisma.userUncheckedCreateInput {
   createdAt: Date;
   updatedAt: Date;
   stripe_costumer_id: string;
-  isUserAdmin: boolean;
+  isUserAdmin?: boolean;
   favorites?: Prisma.favoritesUncheckedCreateNestedManyWithoutUserInput;
   purchase?: Prisma.purchaseUncheckedCreateNestedManyWithoutUserInput;
 }
