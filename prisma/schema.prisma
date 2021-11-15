@@ -33,19 +33,19 @@ model product {
   stripe_id  String
   created_at DateTime @default(now())
 
-  purchase  purchase[]
+
   favorites favorites[]
+  purchase  purchase[]
 }
 
 model purchase {
-  id         String   @id @default(uuid())
-  created_at DateTime @default(now())
+  id                      String   @id @default(uuid())
+  created_at              DateTime @default(now())
+  stripePurchaseReference String?
+  user                    user     @relation(fields: [userId], references: [id])
+  userId                  String
 
-  user   user   @relation(fields: [userId], references: [id])
-  userId String
-
-  product   product @relation(fields: [productId], references: [id])
-  productId String
+  product product[]
 }
 
 model favorites {

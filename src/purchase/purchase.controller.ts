@@ -27,28 +27,28 @@ export class PurchaseController {
 
   @UseGuards(UserGuard)
   @Get()
-  findAll(id: string) {
-    return this.purchaseService.findAll(id);
+  findAll() {
+    return this.purchaseService.findAll();
   }
 
   @UseGuards(UserGuard)
   @Get(':id')
   findOne(@Param('id') id: string) {
-    return this.purchaseService.findOne(+id);
+    return this.purchaseService.findOne(id);
   }
 
-  @Patch(':id')
-  @UseGuards(UserGuard)
-  update(
-    @Param('id') id: string,
-    @Body() updatePurchaseDto: UpdatePurchaseDto,
-  ) {
-    return this.purchaseService.update(+id, updatePurchaseDto);
-  }
+  // @Patch(':id')
+  // @UseGuards(UserGuard)
+  // update(
+  //   @Param('id') id: string,
+  //   @Body() updatePurchaseDto: UpdatePurchaseDto,
+  // ) {
+  //   return this.purchaseService.update(id, updatePurchaseDto);
+  // }
 
-  @Delete(':id')
-  @UseGuards(UserGuard)
-  remove(@Param('id') id: string) {
-    return this.purchaseService.remove(+id);
-  }
+  // @Delete(':id')
+  // @UseGuards(UserGuard)
+  // remove(@Param('id') id: string) {
+  //   return this.purchaseService.remove(id);
+  // }
 }

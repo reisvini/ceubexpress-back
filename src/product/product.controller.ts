@@ -23,7 +23,7 @@ export class ProductController {
 
   @UseGuards(AuthGuard('jwt'))
   @UseGuards(RoleGuard)
-  @UseInterceptors(FileInterceptor('file'))
+  @UseInterceptors(FileInterceptor('image'))
   @Post()
   create(
     @Body() createProductDto: CreateProductDto,

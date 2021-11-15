@@ -1,8 +1,7 @@
-import { Prisma } from '.prisma/client';
-
-export class Purchase implements Prisma.purchaseUncheckedCreateInput {
+export class Purchase {
   id: string;
-  productId: string;
   userId: string;
+  productOnPurchase: Array<string>;
+  stripePurchaseReference: string;
   created_at: Date;
 }

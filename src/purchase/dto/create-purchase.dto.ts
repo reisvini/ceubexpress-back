@@ -1,11 +1,13 @@
-import { IsString } from 'class-validator';
+import { IsArray, IsString } from 'class-validator';
 import { Purchase } from '../entities/purchase.entity';
 
 export class CreatePurchaseDto extends Purchase {
-
-  @IsString()
-  productId: string;
+  @IsArray()
+  productOnPurchase: Array<string>;
 
   @IsString()
   userId: string;
+
+  @IsString()
+  stripePurchaseReference: string;
 }
