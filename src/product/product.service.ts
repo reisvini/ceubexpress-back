@@ -12,15 +12,19 @@ export class ProductService {
   ) {}
 
   async create(createProductDto: CreateProductDto, image) {
-    const imageCloud = await this.cloudinary.uploadImage(image).catch(() => {
-      throw new BadRequestException('Invalid file type.');
-    });
+    try {
+      const imageCloud = await this.cloudinary.uploadImage(image).catch(() => {
+        throw new BadRequestException('Invalid file type.');
+      });
 
-    createProductDto.image = imageCloud.secure_url;
+      createProductDto.image = imageCloud.secure_url;
 
-    return this.prisma.product.create({
-      data: createProductDto,
-    });
+      return this.prisma.product.create({
+        data: createProductDto,
+      });
+    } catch (err) {
+      return new BadRequestException('Error');
+    }
   }
 
   findAll() {
@@ -32,38 +36,63 @@ export class ProductService {
   }
 
   async update(id: string, updateProductDto: UpdateProductDto, image) {
-    if (image) {
+    try {
+      const isProductExist = await this.prisma.product.findUnique({
+        where: { id },
+      });
 
-      const user = this.prisma.product.findUnique({ where: { id } });
+      if (!isProductExist) {
+        throw new BadRequestException('Product not found');
+      }
 
-      const image_url = (await user).image.split('/').pop().split('.')[0];
+      if (image) {
+        const user = await this.prisma.product.findUnique({ where: { id } });
+
+        const image_url = user.image.split('/').pop().split('.')[0];
+
+        const imageCloud = await this.cloudinary
+          .uploadImage(image)
+          .catch(() => {
+            throw new BadRequestException('Invalid file type');
+          });
+
+        this.cloudinary.deleteImage(image_url).catch(() => {
+          throw new BadRequestException('Error deleting image');
+        });
+
+        updateProductDto.image = imageCloud.secure_url;
+      }
+
+      if (Object.keys(updateProductDto).length === 0) {
+        throw new BadRequestException('Nothing to be updated');
+      }
+
+      return this.prisma.product.update({
+        data: updateProductDto,
+        where: { id },
+      });
+    } catch (err) {
+      return { err: err.message };
+    }
+  }
+
+  async remove(id: string) {
+    try {
+      const product = await this.prisma.product.findUnique({ where: { id } });
+
+      if (!product) {
+        throw new BadRequestException('Product not found');
+      }
+
+      const image_url = product.image.split('/').pop().split('.')[0];
 
       this.cloudinary.deleteImage(image_url).catch(() => {
         throw new BadRequestException('Error deleting image');
       });
 
-      const imageCloud = await this.cloudinary.uploadImage(image).catch(() => {
-        throw new BadRequestException('Invalid file type.');
-      });
-
-      updateProductDto.image = imageCloud.secure_url;
+      return this.prisma.product.delete({ where: { id } });
+    } catch (err) {
+      return { err: err.message };
     }
-
-    return this.prisma.product.update({
-      data: updateProductDto,
-      where: { id },
-    });
-  }
-
-  async remove(id: string) {
-    const user = this.prisma.product.findUnique({ where: { id } });
-
-    const image_url = (await user).image.split('/').pop().split('.')[0];
-
-    this.cloudinary.deleteImage(image_url).catch(() => {
-      throw new BadRequestException('Error deleting image');
-    });
-
-    return this.prisma.product.delete({ where: { id } });
   }
 }

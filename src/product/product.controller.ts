@@ -45,7 +45,7 @@ export class ProductController {
 
   @UseGuards(AuthGuard('jwt'))
   @UseGuards(RoleGuard)
-  @UseInterceptors(FileInterceptor('file'))
+  @UseInterceptors(FileInterceptor('image'))
   @Patch(':id')
   update(
     @Param('id') id: string,

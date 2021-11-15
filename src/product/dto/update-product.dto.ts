@@ -10,9 +10,6 @@ export class UpdateProductDto extends PartialType(CreateProductDto) {
   name: string;
 
   @IsString()
-  image: string;
-
-  @IsString()
   price: number;
 
   @IsString()
