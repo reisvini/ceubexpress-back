@@ -51,12 +51,4 @@ export class PurchaseService {
       include: { productOnPurchase: { include: { product: true } } },
     });
   }
-
-  // update(id: string, updatePurchaseDto: UpdatePurchaseDto) {
-  //   return `This action updates a #${id} purchase`;
-  // }
-
-  // remove(id: string) {
-  //   return `This action removes a #${id} purchase`;
-  // }
 }

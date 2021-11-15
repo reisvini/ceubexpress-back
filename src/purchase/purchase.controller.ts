@@ -10,7 +10,6 @@ import {
 } from '@nestjs/common';
 import { PurchaseService } from './purchase.service';
 import { CreatePurchaseDto } from './dto/create-purchase.dto';
-import { UpdatePurchaseDto } from './dto/update-purchase.dto';
 import { AuthGuard } from '@nestjs/passport';
 import { UserGuard } from 'src/auth/guards/user.guard';
 
@@ -36,19 +35,4 @@ export class PurchaseController {
   findOne(@Param('id') id: string) {
     return this.purchaseService.findOne(id);
   }
-
-  // @Patch(':id')
-  // @UseGuards(UserGuard)
-  // update(
-  //   @Param('id') id: string,
-  //   @Body() updatePurchaseDto: UpdatePurchaseDto,
-  // ) {
-  //   return this.purchaseService.update(id, updatePurchaseDto);
-  // }
-
-  // @Delete(':id')
-  // @UseGuards(UserGuard)
-  // remove(@Param('id') id: string) {
-  //   return this.purchaseService.remove(id);
-  // }
 }
