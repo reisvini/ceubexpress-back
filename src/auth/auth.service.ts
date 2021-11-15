@@ -38,7 +38,11 @@ export class AuthService {
       stripe_costumer_id: user.stripe_costumer_id,
     };
 
+    const userData = await this.userService.findOne(payload.email);
+
+
     return {
+      userData,
       token: this.jwtService.sign(payload),
     };
   }
