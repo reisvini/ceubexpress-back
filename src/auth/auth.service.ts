@@ -38,11 +38,10 @@ export class AuthService {
       stripe_costumer_id: user.stripe_costumer_id,
     };
 
-    const userData = await this.userService.findOne(payload.email);
-
+    delete user.password;
 
     return {
-      userData,
+      user,
       token: this.jwtService.sign(payload),
     };
   }
