@@ -12,7 +12,7 @@ model user {
   name               String
   email              String      @unique
   password           String
-  stripe_costumer_id String
+  stripe_customer_id String
   createdAt          DateTime    @default(now())
   updatedAt          DateTime    @default(now())
   isUserAdmin        Boolean     @default(false)

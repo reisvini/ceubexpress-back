@@ -4,10 +4,14 @@ import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { hashSync } from 'bcrypt';
+import { StripeService } from 'src/stripe/stripe.service';
 
 @Injectable()
 export class UserService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly stripeService: StripeService,
+  ) {}
 
   async create(createUserDto: CreateUserDto) {
     const existing = await this.prisma.user.findUnique({
@@ -20,7 +24,14 @@ export class UserService {
       throw new ConflictException('user_alredy_exists');
     }
 
+    const stripeCustomer = await this.stripeService.createCustomer(
+      createUserDto.email,
+      createUserDto.name,
+    );
+
+    createUserDto.stripe_customer_id = stripeCustomer.id;
     createUserDto.password = hashSync(createUserDto.password, 10);
+    
     return this.prisma.user.create({
       data: createUserDto,
       select: {
@@ -28,7 +39,7 @@ export class UserService {
         email: true,
         id: true,
         role: { select: { admin: true } },
-        stripe_costumer_id: true,
+        stripe_customer_id: true,
       },
     });
   }
@@ -44,7 +55,7 @@ export class UserService {
         name: true,
         email: true,
         isUserAdmin: true,
-        stripe_costumer_id: true,
+        stripe_customer_id: true,
       },
     });
   }
@@ -60,7 +71,7 @@ export class UserService {
         email: true,
         password: true,
         isUserAdmin: true,
-        stripe_costumer_id: true,
+        stripe_customer_id: true,
         favorites: true,
         purchase: true,
       },
@@ -78,7 +89,7 @@ export class UserService {
         email: true,
         password: true,
         isUserAdmin: true,
-        stripe_costumer_id: true,
+        stripe_customer_id: true,
         favorites: true,
         purchase: true,
       },

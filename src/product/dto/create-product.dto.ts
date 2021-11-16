@@ -15,6 +15,6 @@ export class CreateProductDto extends Product {
   price: number;
 
   @IsString()
-  @IsNotEmpty()
+  @IsOptional()
   stripe_id: string;
 }

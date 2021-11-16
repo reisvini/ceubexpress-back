@@ -6,7 +6,7 @@ interface user {
   email: string;
   name: string;
   role: boolean;
-  stripe_costumer_id: string;
+  stripe_customer_id: string;
   iat: number;
   exp: number;
 }

@@ -1,6 +1,7 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { CloudinaryService } from 'src/cloudinary/cloudinary.service';
 import { PrismaService } from 'src/prisma/prisma.service';
+import { StripeService } from 'src/stripe/stripe.service';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 
@@ -9,6 +10,7 @@ export class ProductService {
   constructor(
     private readonly prisma: PrismaService,
     private cloudinary: CloudinaryService,
+    private readonly stripeService: StripeService,
   ) {}
 
   async create(createProductDto: CreateProductDto, image) {
@@ -17,7 +19,13 @@ export class ProductService {
         throw new BadRequestException('Invalid file type.');
       });
 
+      const stripeRef = await this.stripeService.createProductRef(
+        createProductDto.name,
+        await imageCloud.secure_url,
+      );
+
       createProductDto.image = imageCloud.secure_url;
+      createProductDto.stripe_id = stripeRef.id;
 
       return this.prisma.product.create({
         data: createProductDto,

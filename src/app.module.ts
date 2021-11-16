@@ -10,6 +10,9 @@ import { RoleModule } from './role/role.module';
 import { AuthModule } from './auth/auth.module';
 import { CloudinaryModule } from './cloudinary/cloudinary.module';
 import { Cloudinary } from './cloudinary';
+import { StripeService } from './stripe/stripe.service';
+import { StripeModule } from './stripe/stripe.module';
+import { ConfigService } from '@nestjs/config';
 
 @Module({
   imports: [
@@ -21,8 +24,9 @@ import { Cloudinary } from './cloudinary';
     RoleModule,
     AuthModule,
     CloudinaryModule,
+    StripeModule,
   ],
   controllers: [AppController],
-  providers: [AppService, Cloudinary],
+  providers: [AppService, Cloudinary, StripeService, ConfigService],
 })
 export class AppModule {}

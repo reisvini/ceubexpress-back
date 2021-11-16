@@ -35,7 +35,7 @@ export class AuthService {
       email: user.email,
       name: user.name,
       role: user.isUserAdmin,
-      stripe_costumer_id: user.stripe_costumer_id,
+      stripe_customer_id: user.stripe_customer_id,
     };
 
     delete user.password;

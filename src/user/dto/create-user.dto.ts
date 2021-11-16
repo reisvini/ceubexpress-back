@@ -1,5 +1,3 @@
-// import {  } from 'class-validator';
-
 import { IsBoolean, IsEmail, IsOptional, IsString } from 'class-validator';
 import { User } from '../entities/user.entity';
 
@@ -19,5 +17,6 @@ export class CreateUserDto extends User {
   isUserAdmin?: boolean;
 
   @IsString()
-  stripe_costumer_id: string;
+  @IsOptional()
+  stripe_customer_id: string;
 }
