@@ -23,6 +23,11 @@ export class UserController {
     return this.userService.create(createUserDto);
   }
 
+  @Get('/quantity')
+  async UserQuantity() {
+    return { quantity: await this.userService.UserQuantity() };
+  }
+
   @UseGuards(AuthGuard('jwt'))
   @UseGuards(RoleGuard)
   @Get()
