@@ -24,8 +24,8 @@ export class UserController {
   }
 
   @Get('/quantity')
-  async UserQuantity() {
-    return { quantity: await this.userService.UserQuantity() };
+  UserQuantity() {
+    return this.userService.UserQuantity();
   }
 
   @UseGuards(AuthGuard('jwt'))

@@ -33,8 +33,8 @@ export class UserService {
     });
   }
 
-  UserQuantity() {
-    return this.prisma.user.count();
+  async UserQuantity() {
+    return { quantity: await this.prisma.user.count() };
   }
 
   findAll() {
