@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { Product } from 'src/product/entities/product.entity';
+import { User } from 'src/user/entities/user.entity';
 import { Stripe } from 'stripe';
 
 @Injectable()
@@ -21,21 +22,36 @@ export class StripeService {
   }
 
   async createProductRef(name: string, image: string): Promise<any> {
-    return this.stripe.products.create({
+    const product = await this.stripe.products.create({
       name: name,
       images: [image],
     });
+
+    return product;
   }
 
-  async createPayment(product_id: string, customer_id: string): Promise<any> {
-    return this.stripe.orders.create({
+  async createPriceRef(product_id: string, unit_amount: number): Promise<any> {
+    return this.stripe.prices.create({
       currency: 'brl',
-      customer: customer_id,
-      items: [
-        {
-          parent: product_id,
-        },
-      ],
+      product: product_id,
+      unit_amount,
+    });
+  }
+
+  async createPayment(products, user): Promise<any> {
+    return this.stripe.checkout.sessions.create({
+      line_items: products.map((product: Product) => ({
+        price: product.stripe_price_id,
+        quantity: 1,
+      })),
+
+      client_reference_id: user.stripe_customer_id,
+      customer: user.stripe_customer_id,
+      payment_method_types: ['card', 'boleto'],
+      mode: 'payment',
+
+      cancel_url: 'http://localhost:3000/',
+      success_url: 'http://localhost:3000/',
     });
   }
 }

@@ -24,6 +24,14 @@ export class ProductService {
         await imageCloud.secure_url,
       );
 
+      const formatPrice = parseInt((createProductDto.price * 100).toFixed(0));
+
+      const stripePriceRef = await this.stripeService.createPriceRef(
+        stripeRef.id,
+        formatPrice,
+      );
+
+      createProductDto.stripe_price_id = stripePriceRef.id;
       createProductDto.image = imageCloud.secure_url;
       createProductDto.stripe_id = stripeRef.id;
 

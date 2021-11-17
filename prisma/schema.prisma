@@ -30,6 +30,7 @@ model product {
   price             Float
   image             String
   stripe_id         String
+  stripe_price_id          String
   created_at        DateTime            @default(now())
   favorites         favorites[]
   productOnPurchase productOnPurchase[]

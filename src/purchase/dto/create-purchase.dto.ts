@@ -1,4 +1,4 @@
-import { IsArray, IsString } from 'class-validator';
+import { IsArray, IsOptional, IsString } from 'class-validator';
 import { Purchase } from '../entities/purchase.entity';
 
 export class CreatePurchaseDto extends Purchase {
@@ -9,5 +9,6 @@ export class CreatePurchaseDto extends Purchase {
   userId: string;
 
   @IsString()
+  @IsOptional()
   stripePurchaseReference: string;
 }

@@ -17,4 +17,8 @@ export class CreateProductDto extends Product {
   @IsString()
   @IsOptional()
   stripe_id: string;
+
+  @IsString()
+  @IsOptional()
+  stripe_price_id: string;
 }
