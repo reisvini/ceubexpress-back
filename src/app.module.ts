@@ -13,6 +13,7 @@ import { Cloudinary } from './cloudinary';
 import { StripeService } from './stripe/stripe.service';
 import { StripeModule } from './stripe/stripe.module';
 import { ConfigService } from '@nestjs/config';
+import { PrismaService } from './prisma/prisma.service';
 
 @Module({
   imports: [
@@ -27,6 +28,12 @@ import { ConfigService } from '@nestjs/config';
     StripeModule,
   ],
   controllers: [AppController],
-  providers: [AppService, Cloudinary, StripeService, ConfigService],
+  providers: [
+    AppService,
+    Cloudinary,
+    StripeService,
+    ConfigService,
+    PrismaService,
+  ],
 })
 export class AppModule {}

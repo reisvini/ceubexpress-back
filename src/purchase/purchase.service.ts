@@ -12,6 +12,18 @@ export class PurchaseService {
     private readonly stripeService: StripeService,
   ) {}
 
+  async webhook(event, signature) {
+    return await this.stripeService.webhook(event, signature);
+  }
+
+  async paymentStatus(event) {
+    if (event === 'payment_intent.succeeded') {
+      console.log('true');
+    } else if (event === 'payment_intent.payment_failed') {
+      console.log('false');
+    }
+  }
+
   async create(createPurchaseDto: CreatePurchaseDto) {
     try {
       const product = await this.prisma.product.findMany({
@@ -20,19 +32,22 @@ export class PurchaseService {
       });
       const userStripeRef = await this.prisma.user.findUnique({
         where: { id: createPurchaseDto.userId },
-        select: { stripe_customer_id: true, email: true },
+        select: { stripe_customer_id: true },
       });
 
       const stripeId = await this.stripeService.createPayment(
         product,
-        userStripeRef
+        userStripeRef,
       );
-      return stripeId;
+
+      createPurchaseDto.stripePurchaseReference = stripeId.id;
+      createPurchaseDto.stripePaymentIntent = stripeId.payment_intent;
       await this.prisma.purchase
         .create({
           data: {
             userId: createPurchaseDto.userId,
             stripePurchaseReference: createPurchaseDto.stripePurchaseReference,
+            stripePaymentIntent: stripeId.payment_intent,
           },
         })
         .then((purchase) => {
@@ -50,7 +65,7 @@ export class PurchaseService {
           });
         });
 
-      return { success: true };
+      return { success: stripeId.url };
     } catch (err) {
       return { success: err };
     }
@@ -59,6 +74,13 @@ export class PurchaseService {
   findAll() {
     return this.prisma.purchase.findMany({
       include: { productOnPurchase: { include: { product: true } } },
+    });
+  }
+
+  updatePaymentStatus(id: string) {
+    return this.prisma.purchase.update({
+      where: { stripePaymentIntent: id },
+      data: { isPaid: true },
     });
   }
 

@@ -3,5 +3,7 @@ export class Purchase {
   userId: string;
   productOnPurchase: Array<string>;
   stripePurchaseReference: string;
+  stripePaymentIntent: string;
+  isPaid: boolean;
   created_at: Date;
 }

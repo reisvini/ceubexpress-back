@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
+import { PrismaService } from 'src/prisma/prisma.service';
 import { Product } from 'src/product/entities/product.entity';
 import { User } from 'src/user/entities/user.entity';
 import { Stripe } from 'stripe';
@@ -8,7 +9,10 @@ import { Stripe } from 'stripe';
 export class StripeService {
   private stripe: Stripe;
 
-  constructor(private configService: ConfigService) {
+  constructor(
+    private configService: ConfigService,
+    private prisma: PrismaService,
+  ) {
     this.stripe = new Stripe(configService.get('STRIPE_SECRET'), {
       apiVersion: '2020-08-27',
     });
@@ -54,4 +58,28 @@ export class StripeService {
       success_url: 'http://localhost:3000/',
     });
   }
+
+  async webhook(event, signature): Promise<any> {
+    let hook: any;
+    hook = this.stripe.webhooks.constructEvent(
+      event,
+      signature,
+      process.env.STRIPE_WEBHOOK_SECRET,
+    );
+
+    if (hook.type === 'payment_intent.succeeded') {
+      await this.prisma.purchase.update({
+        data: { isPaid: true },
+        where: { stripePaymentIntent: hook.data.object.id },
+      });
+      console.log('Payment Succeded');
+    } else if (hook.type === 'payment_intent.payment_failed') {
+      console.log('Payment Failed');
+    }
+    return hook.type;
+  }
+
+  // async confirmPayment(payment_id): Promise<any> {
+  //   return this.stripe.paymentIntents.
+  // }
 }

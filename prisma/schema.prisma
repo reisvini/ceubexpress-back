@@ -30,7 +30,7 @@ model product {
   price             Float
   image             String
   stripe_id         String
-  stripe_price_id          String
+  stripe_price_id   String
   created_at        DateTime            @default(now())
   favorites         favorites[]
   productOnPurchase productOnPurchase[]
@@ -40,7 +40,9 @@ model purchase {
   id                      String              @id @default(uuid())
   created_at              DateTime            @default(now())
   userId                  String
-  stripePurchaseReference String?
+  stripePurchaseReference String?             @unique
+  stripePaymentIntent     String?             @unique
+  isPaid                  Boolean             @default(false)
   user                    user                @relation(fields: [userId], references: [id])
   productOnPurchase       productOnPurchase[]
 
