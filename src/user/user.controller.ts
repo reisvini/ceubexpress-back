@@ -42,9 +42,23 @@ export class UserController {
   }
 
   @UseGuards(AuthGuard('jwt'))
+  @Get('/client/:email')
+
+  findOneClient(@Param('email') email: string) {
+    return this.userService.findOneClient(email);
+  }
+
+  @UseGuards(AuthGuard('jwt'))
   @Patch(':email')
   update(@Param('email') email: string, @Body() updateUserDto: UpdateUserDto) {
     return this.userService.update(email, updateUserDto);
+  }
+
+  @UseGuards(AuthGuard('jwt'))
+  @UseGuards(RoleGuard)
+  @Patch(':id')
+  updateToAdmin(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
+    return this.userService.update(id, updateUserDto);
   }
 
   @UseGuards(AuthGuard('jwt'))

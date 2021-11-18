@@ -31,7 +31,7 @@ export class UserService {
 
     createUserDto.stripe_customer_id = stripeCustomer.id;
     createUserDto.password = hashSync(createUserDto.password, 10);
-    
+
     return this.prisma.user.create({
       data: createUserDto,
       select: {
@@ -78,6 +78,25 @@ export class UserService {
     });
   }
 
+  findOneClient(email: string) {
+    return this.prisma.user.findUnique({
+      where: {
+        email,
+      },
+      select: {
+        id: true,
+        name: true,
+        email: true,
+        password: false,
+        isUserAdmin: false,
+        createdAt: true,
+        stripe_customer_id: false,
+        favorites: true,
+        purchase: true,
+      },
+    });
+  }
+
   findOneById(id: string) {
     return this.prisma.user.findUnique({
       where: {
@@ -98,6 +117,18 @@ export class UserService {
 
   update(id: string, updateUserDto: UpdateUserDto) {
     return this.prisma.user.update({ data: updateUserDto, where: { id } });
+  }
+
+  async updateToAdmin(id: string, updateUserDto: UpdateUserDto) {
+    try {
+      const update = await this.prisma.user.update({
+        data: updateUserDto,
+        where: { id },
+      });
+      return { success: true };
+    } catch (err) {
+      return { success: false };
+    }
   }
 
   remove(id: string) {
