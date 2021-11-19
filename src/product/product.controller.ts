@@ -9,6 +9,7 @@ import {
   UseGuards,
   UseInterceptors,
   UploadedFile,
+  Query,
 } from '@nestjs/common';
 import { ProductService } from './product.service';
 import { CreateProductDto } from './dto/create-product.dto';
@@ -17,12 +18,14 @@ import { AuthGuard } from '@nestjs/passport';
 import { RoleGuard } from 'src/auth/guards/role.guard';
 import { Express } from 'express';
 import { FileInterceptor } from '@nestjs/platform-express';
+import { UserGuard } from 'src/auth/guards/user.guard';
 @Controller('product')
 export class ProductController {
   constructor(private readonly productService: ProductService) {}
 
   @UseGuards(AuthGuard('jwt'))
   @UseGuards(RoleGuard)
+  // @UseGuards(UserGuard)
   @UseInterceptors(FileInterceptor('image'))
   @Post()
   create(
@@ -36,6 +39,11 @@ export class ProductController {
   @Get()
   findAll() {
     return this.productService.findAll();
+  }
+
+  @Get('/pagination')
+  findAllPagination(@Query('take') take: number, @Query('skip') skip: number) {
+    return this.productService.findAllPagination(+take, +skip);
   }
 
   @Get(':id')
