@@ -71,9 +71,10 @@ export class PurchaseService {
     }
   }
 
-  findAll() {
+  findAll(id: string) {
     return this.prisma.purchase.findMany({
       include: { productOnPurchase: { include: { product: true } } },
+      where: { userId: id },
     });
   }
 

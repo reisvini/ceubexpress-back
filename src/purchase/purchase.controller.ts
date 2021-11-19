@@ -36,9 +36,9 @@ export class PurchaseController {
 
   @UseGuards(AuthGuard('jwt'))
   @UseGuards(UserGuard)
-  @Get()
-  findAll() {
-    return this.purchaseService.findAll();
+  @Get(':id')
+  findAll(@Param('id') id: string) {
+    return this.purchaseService.findAll(id);
   }
 
   @UseGuards(AuthGuard('jwt'))
