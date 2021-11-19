@@ -42,12 +42,14 @@ export class PurchaseService {
 
       createPurchaseDto.stripePurchaseReference = stripeId.id;
       createPurchaseDto.stripePaymentIntent = stripeId.payment_intent;
+      createPurchaseDto.amount = stripeId.amount_total;
       await this.prisma.purchase
         .create({
           data: {
             userId: createPurchaseDto.userId,
             stripePurchaseReference: createPurchaseDto.stripePurchaseReference,
             stripePaymentIntent: stripeId.payment_intent,
+            amount: createPurchaseDto.amount,
           },
         })
         .then((purchase) => {

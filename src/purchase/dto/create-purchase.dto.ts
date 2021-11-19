@@ -1,4 +1,4 @@
-import { IsArray, IsBoolean, IsOptional, IsString } from 'class-validator';
+import { IsArray, IsBoolean, IsNumber, IsOptional, IsString } from 'class-validator';
 import { Purchase } from '../entities/purchase.entity';
 
 export class CreatePurchaseDto extends Purchase {
@@ -19,4 +19,8 @@ export class CreatePurchaseDto extends Purchase {
   @IsBoolean()
   @IsOptional()
   isPaid: boolean;
+
+  @IsNumber()
+  @IsOptional()
+  amount: number;
 }

@@ -43,6 +43,7 @@ model purchase {
   stripePurchaseReference String?             @unique
   stripePaymentIntent     String?             @unique
   isPaid                  Boolean             @default(false)
+  amount                  Int
   user                    user                @relation(fields: [userId], references: [id])
   productOnPurchase       productOnPurchase[]
 
