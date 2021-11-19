@@ -24,8 +24,8 @@ export class FavoritesController {
     return this.favoritesService.create(createFavoriteDto);
   }
 
-  @Get()
-  findAll(id: string) {
+  @Get(':id')
+  findAll(@Param('id')  id: string) {
     return this.favoritesService.findAll(id);
   }
 
