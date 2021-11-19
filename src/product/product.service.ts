@@ -47,6 +47,16 @@ export class ProductService {
     return this.prisma.product.findMany();
   }
 
+  async findAllPagination(take: number, skip: number) {
+    const products = await this.prisma.product.findMany({
+      take: take,
+      skip: skip,
+    });
+    const productsCount = await this.prisma.product.count();
+
+    return { products, productsCount };
+  }
+
   findOne(id: string) {
     return this.prisma.product.findUnique({ where: { id } });
   }
