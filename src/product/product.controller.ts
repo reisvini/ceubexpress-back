@@ -41,6 +41,15 @@ export class ProductController {
     return this.productService.findAll();
   }
 
+  @Post('/search')
+  search(
+    @Body() data: any,
+    @Query('take') take: number,
+    @Query('skip') skip: number,
+  ) {
+    return this.productService.searchProduct(data.search, +take, +skip);
+  }
+
   @Get('/pagination')
   findAllPagination(@Query('take') take: number, @Query('skip') skip: number) {
     return this.productService.findAllPagination(+take, +skip);

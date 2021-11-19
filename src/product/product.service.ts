@@ -57,6 +57,16 @@ export class ProductService {
     return { products, productsCount };
   }
 
+  async searchProduct(search: string, take: number, skip: number) {
+    return await this.prisma.product.findMany({
+      where: {
+        name: { startsWith: search },
+      },
+      take: take,
+      skip: skip,
+    });
+  }
+
   findOne(id: string) {
     return this.prisma.product.findUnique({ where: { id } });
   }
