@@ -54,8 +54,8 @@ export class StripeService {
       payment_method_types: ['card', 'boleto'],
       mode: 'payment',
 
-      cancel_url: 'http://localhost:3000/purchases',
-      success_url: 'http://localhost:3000/purchases',
+      cancel_url: 'https://uniceubexpress.vercel.app/purchases',
+      success_url: 'https://uniceubexpress.vercel.app/purchases',
     });
   }
 
