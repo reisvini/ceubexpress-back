@@ -48,8 +48,8 @@ export class UserService {
     return { quantity: await this.prisma.user.count() };
   }
 
-  findAll() {
-    return this.prisma.user.findMany({
+  async findAll(take: number, skip: number) {
+    const users = await this.prisma.user.findMany({
       select: {
         id: true,
         name: true,
@@ -57,7 +57,13 @@ export class UserService {
         isUserAdmin: true,
         stripe_customer_id: true,
       },
+      take: take,
+      skip: skip,
     });
+
+    const usersTotal = await this.prisma.user.count();
+
+    return { users, usersTotal };
   }
 
   findOne(email: string) {
@@ -91,7 +97,7 @@ export class UserService {
         isUserAdmin: false,
         createdAt: true,
         stripe_customer_id: false,
-        favorites: true,
+        favorites: {},
         purchase: true,
       },
     });

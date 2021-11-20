@@ -7,6 +7,7 @@ import {
   Param,
   Delete,
   UseGuards,
+  Query,
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -31,8 +32,8 @@ export class UserController {
   @UseGuards(AuthGuard('jwt'))
   @UseGuards(RoleGuard)
   @Get()
-  findAll() {
-    return this.userService.findAll();
+  findAll(@Query('take') take: number, @Query('skip') skip: number) {
+    return this.userService.findAll(+take, +skip);
   }
 
   @UseGuards(AuthGuard('jwt'))
@@ -43,7 +44,6 @@ export class UserController {
 
   @UseGuards(AuthGuard('jwt'))
   @Get('/client/:email')
-
   findOneClient(@Param('email') email: string) {
     return this.userService.findOneClient(email);
   }
