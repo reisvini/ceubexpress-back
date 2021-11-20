@@ -60,7 +60,7 @@ export class ProductService {
   async searchProduct(search: string, take: number, skip: number) {
     const products = await this.prisma.product.findMany({
       where: {
-        name: { startsWith: search },
+        name: { contains: search },
       },
       take: take,
       skip: skip,
