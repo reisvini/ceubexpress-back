@@ -36,10 +36,10 @@ export class FavoritesService {
   async remove(id: string) {
     try {
       return await this.prisma.favorites.delete({
-        where: { id },
+        where: { productId: id },
       });
     } catch (err) {
-      return { error: 'Error deleting favorite' };
+      return { error: err };
     }
   }
 }
