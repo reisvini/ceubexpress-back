@@ -77,6 +77,7 @@ export class PurchaseService {
     return this.prisma.purchase.findMany({
       include: { productOnPurchase: { include: { product: true } } },
       where: { userId: id },
+      orderBy: { created_at: 'desc' },
     });
   }
 
