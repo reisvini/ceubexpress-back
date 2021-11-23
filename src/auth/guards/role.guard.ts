@@ -1,5 +1,6 @@
 import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
+import { PrismaService } from 'src/prisma/prisma.service';
 
 interface user {
   sub: string;
@@ -13,8 +14,11 @@ interface user {
 
 @Injectable()
 export class RoleGuard implements CanActivate {
-  constructor(private readonly jwtService: JwtService) {}
-  canActivate(context: ExecutionContext): boolean | Promise<boolean> {
+  constructor(
+    private readonly jwtService: JwtService,
+    private readonly prisma: PrismaService,
+  ) {}
+  async canActivate(context: ExecutionContext): Promise<boolean> {
     try {
       const request = context.switchToHttp().getRequest();
       const headers = request.headers.authorization.replace('Bearer ', '');
@@ -22,7 +26,16 @@ export class RoleGuard implements CanActivate {
       const user = this.jwtService.decode(authorization) as user;
 
       if (user.role) {
-        return true;
+        const isUserAdmin = await this.prisma.user.findUnique({
+          where: { id: user.sub },
+          select: { isUserAdmin: true },
+        });
+
+        if (isUserAdmin) {
+          return true;
+        } else {
+          return false;
+        }
       }
     } catch (err) {
       return false;

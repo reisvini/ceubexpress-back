@@ -25,12 +25,12 @@ export class FavoritesController {
   }
 
   @Get(':id')
-  findAll(@Param('id')  id: string) {
+  findAll(@Param('id') id: string) {
     return this.favoritesService.findAll(id);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.favoritesService.remove(id);
+  remove(@Param('id') id: string, @Body('userId') userId: string) {
+    return this.favoritesService.remove(id, userId);
   }
 }

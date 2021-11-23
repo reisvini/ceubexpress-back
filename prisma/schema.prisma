@@ -54,7 +54,7 @@ model favorites {
   id         String   @id @default(uuid())
   created_at DateTime @default(now())
   userId     String
-  productId  String   @unique
+  productId  String   
   product    product  @relation(fields: [productId], references: [id])
   user       user     @relation(fields: [userId], references: [id])
 

@@ -56,6 +56,7 @@ export class UserService {
         email: true,
         isUserAdmin: true,
         stripe_customer_id: true,
+        createdAt: true,
       },
       take: take,
       skip: skip,
@@ -94,7 +95,7 @@ export class UserService {
         name: true,
         email: true,
         password: false,
-        isUserAdmin: false,
+        isUserAdmin: true,
         createdAt: true,
         stripe_customer_id: false,
         favorites: {},
@@ -121,16 +122,9 @@ export class UserService {
     });
   }
 
-  update(id: string, updateUserDto: UpdateUserDto) {
-    return this.prisma.user.update({ data: updateUserDto, where: { id } });
-  }
-
-  async updateToAdmin(id: string, updateUserDto: UpdateUserDto) {
+  async update(id: string, updateUserDto: UpdateUserDto) {
     try {
-      const update = await this.prisma.user.update({
-        data: updateUserDto,
-        where: { id },
-      });
+      await this.prisma.user.update({ data: updateUserDto, where: { id } });
       return { success: true };
     } catch (err) {
       return { success: false };

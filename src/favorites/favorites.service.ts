@@ -22,7 +22,7 @@ export class FavoritesService {
         });
       }
     } catch (err) {
-      return { success: false };
+      return { success: err };
     }
   }
 
@@ -33,11 +33,16 @@ export class FavoritesService {
     });
   }
 
-  async remove(id: string) {
+  async remove(id: string, userId: string) {
     try {
-      return await this.prisma.favorites.delete({
-        where: { productId: id },
+      const removeFavorite = await this.prisma.favorites.deleteMany({
+        where: { productId: { equals: id }, userId: { equals: userId } },
       });
+      if (removeFavorite.count > 0) {
+        return { success: true };
+      } else {
+        return { success: false };
+      }
     } catch (err) {
       return { error: err };
     }

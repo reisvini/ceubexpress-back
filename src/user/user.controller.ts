@@ -14,6 +14,7 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { AuthGuard } from '@nestjs/passport';
 import { RoleGuard } from 'src/auth/guards/role.guard';
+import { UserGuard } from 'src/auth/guards/user.guard';
 
 @Controller('user')
 export class UserController {
@@ -37,28 +38,24 @@ export class UserController {
   }
 
   @UseGuards(AuthGuard('jwt'))
+  @UseGuards(UserGuard)
   @Get(':email')
   findOne(@Param('email') email: string) {
     return this.userService.findOne(email);
   }
-
+  
   @UseGuards(AuthGuard('jwt'))
+  @UseGuards(UserGuard)
   @Get('/client/:email')
   findOneClient(@Param('email') email: string) {
     return this.userService.findOneClient(email);
   }
 
   @UseGuards(AuthGuard('jwt'))
+  @UseGuards(RoleGuard)
   @Patch(':email')
   update(@Param('email') email: string, @Body() updateUserDto: UpdateUserDto) {
     return this.userService.update(email, updateUserDto);
-  }
-
-  @UseGuards(AuthGuard('jwt'))
-  @UseGuards(RoleGuard)
-  @Patch(':id')
-  updateToAdmin(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
-    return this.userService.update(id, updateUserDto);
   }
 
   @UseGuards(AuthGuard('jwt'))
