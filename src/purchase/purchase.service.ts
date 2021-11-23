@@ -73,12 +73,30 @@ export class PurchaseService {
     }
   }
 
-  findAll(id: string) {
+  findAllByUser(id: string) {
     return this.prisma.purchase.findMany({
       include: { productOnPurchase: { include: { product: true } } },
       where: { userId: id },
       orderBy: { created_at: 'desc' },
     });
+  }
+
+  async findAll(take: number, skip: number) {
+    const purchases = await this.prisma.purchase.findMany({
+      select: {
+        id: true,
+        amount: true,
+        created_at: true,
+        isPaid: true,
+        user: { select: { name: true, email: true } },
+      },
+      orderBy: { created_at: 'desc' },
+      take: take,
+      skip: skip,
+    });
+    const purchasesCount = await this.prisma.purchase.count();
+
+    return { purchases, purchasesCount };
   }
 
   updatePaymentStatus(id: string) {
