@@ -31,7 +31,7 @@ export class RoleGuard implements CanActivate {
           select: { isUserAdmin: true },
         });
 
-        if (isUserAdmin) {
+        if (isUserAdmin.isUserAdmin === true) {
           return true;
         } else {
           return false;
