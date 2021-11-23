@@ -51,6 +51,7 @@ export class ProductService {
     const products = await this.prisma.product.findMany({
       take: take,
       skip: skip,
+      orderBy: { created_at: 'desc' },
     });
     const productsCount = await this.prisma.product.count();
 
@@ -64,11 +65,12 @@ export class ProductService {
       },
       take: take,
       skip: skip,
+      orderBy: { created_at: 'desc' },
     });
     const productsCount = await this.prisma.product.count({
       where: {
         name: { contains: search },
-      }
+      },
     });
     return { products, productsCount };
   }
