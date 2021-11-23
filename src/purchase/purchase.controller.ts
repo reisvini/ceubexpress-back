@@ -20,8 +20,6 @@ import { RoleGuard } from 'src/auth/guards/role.guard';
 export class PurchaseController {
   constructor(private readonly purchaseService: PurchaseService) {}
 
-  @UseGuards(AuthGuard('jwt'))
-  @UseGuards(UserGuard)
   @Post('webhook')
   async webhook(@Headers('stripe-signature') signature, @Req() event: any) {
     try {
