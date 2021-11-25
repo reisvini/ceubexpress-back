@@ -56,6 +56,9 @@ export class StripeService {
       customer: user.stripe_customer_id,
       payment_method_types: ['card', 'boleto'],
       mode: 'payment',
+      customer_update: { address: 'auto', name: 'never' },
+      shipping_address_collection: { allowed_countries: ['BR'] },
+      billing_address_collection: 'auto',
 
       cancel_url: 'https://uniceubexpress.vercel.app/purchases',
       success_url: 'https://uniceubexpress.vercel.app/purchases',
