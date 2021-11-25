@@ -71,7 +71,6 @@ export class StripeService {
     );
 
     if (hook.type === 'payment_intent.succeeded') {
-      console.log(hhok)
       await this.prisma.purchase.update({
         data: {
           isPaid: true,
