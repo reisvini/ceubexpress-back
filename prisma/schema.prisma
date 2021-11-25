@@ -32,6 +32,7 @@ model product {
   stripe_id         String
   stripe_price_id   String
   created_at        DateTime            @default(now())
+  forSale           Boolean             @default(true)
   favorites         favorites[]
   productOnPurchase productOnPurchase[]
 }
@@ -44,7 +45,8 @@ model purchase {
   stripePaymentIntent     String?             @unique
   isPaid                  Boolean             @default(false)
   amount                  Int
-  purchase_url             String              
+  purchase_url            String              
+  receipt_url             String?              
   isPurchaseExpired       Boolean             @default(false)
   user                    user                @relation(fields: [userId], references: [id])
   productOnPurchase       productOnPurchase[]

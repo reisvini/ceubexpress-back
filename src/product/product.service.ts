@@ -44,13 +44,14 @@ export class ProductService {
   }
 
   findAll() {
-    return this.prisma.product.findMany();
+    return this.prisma.product.findMany({ where: { forSale: true } });
   }
 
   async findAllPagination(take: number, skip: number) {
     const products = await this.prisma.product.findMany({
       take: take,
       skip: skip,
+      where: { forSale: true },
       orderBy: { created_at: 'desc' },
     });
     const productsCount = await this.prisma.product.count();
@@ -62,6 +63,7 @@ export class ProductService {
     const products = await this.prisma.product.findMany({
       where: {
         name: { contains: search },
+        forSale: true,
       },
       take: take,
       skip: skip,
@@ -151,13 +153,10 @@ export class ProductService {
         throw new BadRequestException('Product not found');
       }
 
-      const image_url = product.image.split('/').pop().split('.')[0];
-
-      this.cloudinary.deleteImage(image_url).catch(() => {
-        throw new BadRequestException('Error deleting image');
+      return this.prisma.product.update({
+        data: { forSale: false },
+        where: { id },
       });
-
-      return this.prisma.product.delete({ where: { id } });
     } catch (err) {
       return { err: err.message };
     }

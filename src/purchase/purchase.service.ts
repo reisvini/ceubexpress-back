@@ -89,6 +89,8 @@ export class PurchaseService {
         amount: true,
         created_at: true,
         isPaid: true,
+        purchase_url: true,
+        isPurchaseExpired: true,
         user: { select: { name: true, email: true } },
       },
       orderBy: { created_at: 'desc' },
