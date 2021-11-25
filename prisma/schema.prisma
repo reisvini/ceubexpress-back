@@ -44,6 +44,8 @@ model purchase {
   stripePaymentIntent     String?             @unique
   isPaid                  Boolean             @default(false)
   amount                  Int
+  purchase_url             String              
+  isPurchaseExpired       Boolean             @default(false)
   user                    user                @relation(fields: [userId], references: [id])
   productOnPurchase       productOnPurchase[]
 

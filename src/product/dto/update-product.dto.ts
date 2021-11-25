@@ -14,4 +14,7 @@ export class UpdateProductDto extends PartialType(CreateProductDto) {
 
   @IsString()
   stripe_id: string;
+
+  @IsString()
+  stripe_price_id: string;
 }

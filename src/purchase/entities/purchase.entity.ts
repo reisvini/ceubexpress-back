@@ -5,5 +5,7 @@ export class Purchase {
   stripePurchaseReference: string;
   stripePaymentIntent: string;
   isPaid: boolean;
+  purchase_url: string;
+  isPurchaseExpired: boolean;
   created_at: Date;
 }

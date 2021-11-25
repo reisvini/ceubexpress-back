@@ -34,7 +34,10 @@ export class StripeService {
     return product;
   }
 
-  async createPriceRef(product_id: string, unit_amount: number): Promise<any> {
+  async createPriceRef(
+    product_id: string,
+    unit_amount: number,
+  ): Promise<Stripe.Price> {
     return this.stripe.prices.create({
       currency: 'brl',
       product: product_id,
@@ -75,11 +78,53 @@ export class StripeService {
       console.log('Payment Succeded');
     } else if (hook.type === 'payment_intent.payment_failed') {
       console.log('Payment Failed');
+    } else if (hook.type === 'checkout.session.expired') {
+      console.log('Checkout Session Expired');
+      await this.prisma.purchase.update({
+        data: { isPurchaseExpired: true },
+        where: { stripePaymentIntent: hook.data.object.id },
+      });
     }
     return hook.type;
   }
 
-  // async confirmPayment(payment_id): Promise<any> {
-  //   return this.stripe.paymentIntents.
-  // }
+  async updatePrice(
+    price_id: string,
+    new_price: number,
+    product_stripe_id: string,
+  ): Promise<any> {
+    try {
+      await this.stripe.prices.update(price_id, {
+        active: false,
+      });
+
+      return this.createPriceRef(product_stripe_id, new_price);
+    } catch (err) {
+      return err;
+    }
+  }
+
+  async updateProductName(
+    new_name: string,
+    product_stripe_id: string,
+  ): Promise<any> {
+    try {
+      return this.stripe.products.update(product_stripe_id, { name: new_name });
+    } catch (err) {
+      return err;
+    }
+  }
+
+  async updateProductImage(
+    image: string,
+    product_stripe_id: string,
+  ): Promise<any> {
+    try {
+      return this.stripe.products.update(product_stripe_id, {
+        images: [image],
+      });
+    } catch (err) {
+      return err;
+    }
+  }
 }

@@ -104,7 +104,30 @@ export class ProductService {
           throw new BadRequestException('Error deleting image');
         });
 
+        await this.stripeService.updateProductImage(
+          imageCloud.secure_url,
+          isProductExist.stripe_id,
+        );
+
         updateProductDto.image = imageCloud.secure_url;
+      }
+
+      if (updateProductDto.price) {
+        const formatPrice = parseInt((updateProductDto.price * 100).toFixed(0));
+        const updatedPrice = await this.stripeService.updatePrice(
+          isProductExist.stripe_price_id,
+          formatPrice,
+          isProductExist.stripe_id,
+        );
+
+        updateProductDto.stripe_price_id = updatedPrice.id;
+      }
+
+      if (updateProductDto.name) {
+        await this.stripeService.updateProductName(
+          updateProductDto.name,
+          isProductExist.stripe_id,
+        );
       }
 
       if (Object.keys(updateProductDto).length === 0) {

@@ -49,6 +49,7 @@ export class PurchaseService {
             userId: createPurchaseDto.userId,
             stripePurchaseReference: createPurchaseDto.stripePurchaseReference,
             stripePaymentIntent: stripeId.payment_intent,
+            purchase_url: stripeId.url,
             amount: createPurchaseDto.amount,
           },
         })

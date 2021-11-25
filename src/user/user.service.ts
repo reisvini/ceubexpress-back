@@ -60,6 +60,7 @@ export class UserService {
       },
       take: take,
       skip: skip,
+      orderBy: { createdAt: 'desc' },
     });
 
     const usersTotal = await this.prisma.user.count();
